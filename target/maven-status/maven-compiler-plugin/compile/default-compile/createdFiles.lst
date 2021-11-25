@@ -1,0 +1,5 @@
+net\mergu\forbiddizen\packets\AbstractPacket.class
+net\mergu\forbiddizen\packets\WrapperPlayServerPlayerInfo.class
+net\mergu\forbiddizen\commands\TablistCommand.class
+net\mergu\forbiddizen\events\PaperServerListPingScriptEvent.class
+net\mergu\forbiddizen\Forbiddizen.class
