@@ -24,9 +24,9 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: wget -O BuildTools/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
       - uses: actions/setup-java@v2
-          with:
-            distribution: 'adopt'
-            java-version: '11'
+        with:
+          distribution: 'temurin'
+          java-version: '11'
       - name: 1.16.5
         if: steps.cache.outputs.cache-hit != 'true'
         run: cd BuildTools && java -jar BuildTools.jar --rev 1.16.5
