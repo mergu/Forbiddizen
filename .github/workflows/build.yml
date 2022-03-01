@@ -8,14 +8,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-#      - name: Cache Maven packages
-#        id: cache
-#        uses: actions/cache@v2
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2
-#          restore-keys: ${{ runner.os }}-m2
-#
+      - name: Cache Maven packages
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2
+          restore-keys: ${{ runner.os }}-m2
+
 #      # Run Spigot BuildTools for NMS if required
 #      - name: Setup BuildTools
 #        run: mkdir BuildTools && wget -O BuildTools/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
@@ -33,10 +33,10 @@ jobs:
 #        run: cd BuildTools && java -jar BuildTools.jar --rev 1.16.5
 #
 #      # 1.17.1
-#      - uses: actions/setup-java@v2
-#        with:
-#          distribution: 'temurin'
-#          java-version: '17'
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 #      - name: Check cache for 1.17.1 NMS
 #        id: cache_1_17_1
 #        run: test -f ~/.m2/repository/org/spigotmc/spigot/1.17.1-R0.1-SNAPSHOT/spigot-1.17.1-R0.1-SNAPSHOT.jar && echo "::set-output name=sucess::true" || echo "::set-output name=sucess::false"
