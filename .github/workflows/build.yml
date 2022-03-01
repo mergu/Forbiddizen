@@ -13,35 +13,43 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2
           restore-keys: ${{ runner.os }}-m2
 
       # Run Spigot BuildTools for NMS if required
       - name: Setup BuildTools
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: mkdir BuildTools
-      - name: Download BuildTools
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: wget -O BuildTools/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+        run: mkdir BuildTools && wget -O BuildTools/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
 
-      # BuildTools requires an older version of java to build 1.16.x
+      # 1.16.5
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: '8'
-      - name: 1.16.5
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Check cache for 1.16.5 NMS
+        id: cache_1_16_5
+        run: test -f ~/.m2/repository/org/spigotmc/spigot/1.16.5-R0.1-SNAPSHOT/spigot-1.16.5-R0.1-SNAPSHOT.jar && echo "::set-output name=sucess::true" || echo "::set-output name=sucess::false"
+      - name: Build 1.16.5 NMS
+        if: steps.cache_1_16_5.outputs.success != 'true'
         run: cd BuildTools && java -jar BuildTools.jar --rev 1.16.5
 
+      # 1.17.1
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: 1.17.1
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Check cache for 1.17.1 NMS
+        id: cache_1_17_1
+        run: test -f ~/.m2/repository/org/spigotmc/spigot/1.17.1-R0.1-SNAPSHOT/spigot-1.17.1-R0.1-SNAPSHOT.jar && echo "::set-output name=sucess::true" || echo "::set-output name=sucess::false"
+      - name: Build 1.17.1 NMS
+        if: steps.cache_1_17_1.outputs.success != 'true'
         run: cd BuildTools && java -jar BuildTools.jar --rev 1.17.1 --remapped remapped-mojang
-      - name: 1.18.1
-        if: steps.cache.outputs.cache-hit != 'true'
+
+      # 1.18.1
+      - name: Check cache for 1.18.1 NMS
+        id: cache_1_18_1
+        run: test -f ~/.m2/repository/org/spigotmc/spigot/1.18.1-R0.1-SNAPSHOT/spigot-1.18.1-R0.1-SNAPSHOT.jar && echo "::set-output name=sucess::true" || echo "::set-output name=sucess::false"
+      - name: Build 1.18.1 NMS
+        if: steps.cache_1_18_1.outputs.success != 'true'
         run: cd BuildTools && java -jar BuildTools.jar --rev 1.18.1 --remapped remapped-mojang
 
       # Build and release the project
@@ -49,10 +57,10 @@ jobs:
         run: mvn clean package install
       - name: Set release version env variable
         run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-      - name: Create release dir and rename jar
-        run: mkdir release && mv target/Forbiddizen-${{ env.RELEASE_VERSION }}.jar release/Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
+      #- name: Create release dir and rename jar
+      #  run: mkdir release && mv target/Forbiddizen-${{ env.RELEASE_VERSION }}.jar release/Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
       - name: Upload jar
         uses: actions/upload-artifact@v2
         with:
-          name: Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}
-          path: release/Forbiddizen*.jar
+          name: Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
+          path: target/Forbiddizen-${{ env.RELEASE_VERSION }}.jar
