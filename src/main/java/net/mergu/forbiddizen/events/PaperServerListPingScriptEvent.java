@@ -1,7 +1,9 @@
 package net.mergu.forbiddizen.events;
 
 import com.denizenscript.denizen.paper.events.ServerListPingScriptEventPaperImpl;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
@@ -22,6 +24,10 @@ public class PaperServerListPingScriptEvent extends ServerListPingScriptEventPap
             for (String line : ListTag.valueOf(determination.substring("hover_text:".length()), getTagContext(path))) {
                 playerSample.add(Bukkit.createProfile(line));
             }
+            return true;
+        }
+        if (lower.startsWith("num_players:") && ArgumentHelper.matchesInteger(determination.substring("num_players:".length()))) {
+            ((PaperServerListPingEvent) event).setNumPlayers(new ElementTag(determination.substring("num_players:".length())).asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);

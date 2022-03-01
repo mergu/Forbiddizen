@@ -1,7 +1,7 @@
 name: Forbiddizen
-version: '1.0.0-SNAPSHOT'
+version: '1.0.2-SNAPSHOT'
 main: net.mergu.forbiddizen.Forbiddizen
-api-version: 1.17
+api-version: 1.18
 depend: [Denizen, ProtocolLib]
 authors: [Mergu]
 description: A collection of Denizen extensions that are not supported by the main org due to security/scope/moral concerns
