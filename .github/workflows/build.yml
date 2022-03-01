@@ -50,9 +50,9 @@ jobs:
       - name: Set release version env variable
         run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Create release dir and rename jar
-        run: mkdir release && mv target/Forbiddizen*.jar release/Forbiddizen-${{ env.RELEASE_VERSION }}-${{ github.run_number }}.jar
+        run: mkdir release && mv target/Forbiddizen-${{ env.RELEASE_VERSION }}.jar release/Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
       - name: Upload jar
         uses: actions/upload-artifact@v2
         with:
-          name: Forbiddizen-${{ env.RELEASE_VERSION }}-${{ github.run_number }}
+          name: Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}
           path: release/Forbiddizen*.jar
