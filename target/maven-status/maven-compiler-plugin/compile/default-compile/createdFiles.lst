@@ -1,7 +1,0 @@
-net\mergu\forbiddizen\events\PaperServerListPingScriptEvent.class
-net\mergu\forbiddizen\events\TablistModifiedScriptEvent.class
-net\mergu\forbiddizen\Forbiddizen$1.class
-net\mergu\forbiddizen\Forbiddizen.class
-net\mergu\forbiddizen\packets\AbstractPacket.class
-net\mergu\forbiddizen\packets\WrapperPlayServerPlayerInfo.class
-net\mergu\forbiddizen\commands\TablistCommand.class
