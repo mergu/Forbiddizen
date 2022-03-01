@@ -9,19 +9,19 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.mergu.forbiddizen.packets.WrapperPlayServerPlayerInfo;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class TablistCommand extends AbstractCommand {
 
     public TablistCommand() {
         setName("tablist");
-        setSyntax("tablist (remove) [id:<id>/<player>] (name:<name>) (display_name:<name>) (skin_blob:<skin_blob>) (ping:<ping>)");
+        setSyntax("tablist [id:<id>/<player>] (action:<action>) (name:<name>) (display_name:<name>) (skin_blob:<skin_blob>) (ping:<ping>) (gamemode:<gamemode>)");
         setRequiredArguments(1, -1);
     }
 
@@ -48,8 +48,13 @@ public class TablistCommand extends AbstractCommand {
             else if (arg.matchesPrefix("ping") && arg.matchesInteger()) {
                 scriptEntry.addObject("ping", arg.asElement());
             }
-            else if (arg.matches("remove")) {
+            // ADD_PLAYER, REMOVE_PLAYER, UPDATE_LATENCY, UPDATE_GAME_MODE, UPDATE_DISPLAY_NAME
+            else if (arg.matchesPrefix("action") && arg.matchesEnum(EnumWrappers.PlayerInfoAction.values())) {
                 scriptEntry.addObject("action", arg.asElement());
+            }
+            // SURVIVAL, ADVENTURE, CREATIVE, SPECTATOR
+            else if (arg.matchesPrefix("gamemode") && arg.matchesEnum(EnumWrappers.NativeGameMode.values())) {
+                scriptEntry.addObject("gamemode", arg.asElement());
             }
             else {
                 arg.reportUnhandled();
@@ -59,8 +64,9 @@ public class TablistCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must have an id");
         }
         scriptEntry.defaultObject("name", new ElementTag(""));
-        scriptEntry.defaultObject("action", new ElementTag("add"));
+        scriptEntry.defaultObject("action", new ElementTag("add_player"));
         scriptEntry.defaultObject("ping", new ElementTag("0"));
+        scriptEntry.defaultObject("gamemode", new ElementTag("survival"));
     }
 
     @Override
@@ -71,14 +77,10 @@ public class TablistCommand extends AbstractCommand {
         ElementTag displayName = scriptEntry.getElement("display_name");
         ElementTag skinBlob = scriptEntry.getElement("skin_blob");
         ElementTag ping = scriptEntry.getElement("ping");
+        ElementTag gamemode = scriptEntry.getElement("gamemode");
 
         WrapperPlayServerPlayerInfo packet = new WrapperPlayServerPlayerInfo();
-        if (CoreUtilities.equalsIgnoreCase(action.asString(), "add")) {
-            packet.setAction(EnumWrappers.PlayerInfoAction.ADD_PLAYER);
-        }
-        else if (CoreUtilities.equalsIgnoreCase(action.asString(), "remove")) {
-            packet.setAction(EnumWrappers.PlayerInfoAction.REMOVE_PLAYER);
-        }
+        packet.setAction(EnumWrappers.PlayerInfoAction.valueOf(action.asString().toUpperCase()));
 
         WrappedGameProfile gameProfile = new WrappedGameProfile(UUID.fromString(id.asString()), name.asString());
         if (skinBlob != null && skinBlob.asString().contains(";")) {
@@ -93,9 +95,13 @@ public class TablistCommand extends AbstractCommand {
             wrappedChatComponent = WrappedChatComponent.fromJson(displayJson);
         }
 
-        PlayerInfoData playerInfoData = new PlayerInfoData(
-                gameProfile, ping.asInt(), EnumWrappers.NativeGameMode.SURVIVAL, wrappedChatComponent);
-        packet.setData(Arrays.asList(playerInfoData));
+        EnumWrappers.NativeGameMode nativeGameMode = EnumWrappers.NativeGameMode.valueOf(gamemode.asString().toUpperCase());
+
+        PlayerInfoData playerInfoData = new PlayerInfoData(gameProfile, ping.asInt(), nativeGameMode, wrappedChatComponent);
+        List<PlayerInfoData> playerInfoDataList = new ArrayList<>();
+        playerInfoDataList.add(playerInfoData);
+
+        packet.setData(playerInfoDataList);
         packet.sendPacket(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity());
     }
 }
