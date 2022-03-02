@@ -52,7 +52,7 @@ jobs:
             changes="- none"
           fi
           changelog=$(printf 'Changes since previous release:\n%s' "$changes")
-          echo "CHANGELOG=$changelog" >> $GITHUB_ENV
+          echo "CHANGELOG=\"$changelog\"" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
