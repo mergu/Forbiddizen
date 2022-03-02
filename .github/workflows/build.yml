@@ -45,6 +45,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
           toTag: ${{ github.sha }}
+          commitMode: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -61,7 +62,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: releases/Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
+          asset_path: release/Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
           asset_name: Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
           asset_content_type: application/java-archive
         env:
