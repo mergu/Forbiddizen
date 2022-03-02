@@ -31,7 +31,7 @@ jobs:
       - name: Set release version
         run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Name artifact
-        run: mkdir release && cp target/Forbiddizen-${{ env.RELEASE_VERSION }}.jar releases/Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
+        run: mkdir release && cp target/Forbiddizen-${{ env.RELEASE_VERSION }}.jar release/Forbiddizen-${{ env.RELEASE_VERSION }}-b${{ github.run_number }}.jar
       #- name: Upload jar
       #  uses: actions/upload-artifact@v2
       #  with:
