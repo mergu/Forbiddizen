@@ -41,7 +41,7 @@ jobs:
 
       # Release build
       - name: Get last tag
-        run: echo "LAST_TAG=$(git describe --tags)" >> $GITHUB_ENV
+        run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: Build changelog
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v2.9.0
