@@ -40,10 +40,13 @@ jobs:
       #    path: target/Forbiddizen-${{ env.RELEASE_VERSION }}.jar
 
       # Release build
+      - name: Get last tag
+        run: echo "LAST_TAG=$(git describe --tags)" >> $GITHUB_ENV
       - name: Build changelog
         id: build_changelog
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
+          fromTag: ${{ env.LAST_TAG }}
           toTag: ${{ github.sha }}
           commitMode: true
         env:
