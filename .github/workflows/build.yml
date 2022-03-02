@@ -45,14 +45,13 @@ jobs:
       - name: Get last tag
         run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: Build changelog
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v2.9.0
-        with:
-          fromTag: ${{ env.LAST_TAG }}
-          toTag: ${{ github.sha }}
-          commitMode: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          last_tag=`git describe --tags --abbrev=0`;
+          changes=`git log --no-merges --format=format:"- %s" "$last_tag..HEAD"`;
+          if [ -z "$changes" ]; then
+            changes="- no changes"
+          fi
+          echo "CHANGELOG=Changes since previous release:\n$changes" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
@@ -60,7 +59,7 @@ jobs:
         with:
           tag_name: v${{ env.RELEASE_VERSION }}-b${{ github.run_number }}
           release_name: Forbiddizen ${{ env.RELEASE_VERSION }} (Build ${{ github.run_number }})
-          body: ${{ steps.build_changelog.outputs.changelog }}
+          body: ${{ env.CHANGELOG }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload release artifact
