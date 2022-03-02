@@ -45,9 +45,9 @@ jobs:
       - name: Get last tag
         run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: Build changelog
-        run: >-
-          last_tag=`git describe --tags --abbrev=0`;
-          changes=`git log --no-merges --format=format:"- %s" "$last_tag..HEAD"`;
+        run: |
+          last_tag=`git describe --tags --abbrev=0`
+          changes=`git log --no-merges --format=format:"- %s" "$last_tag..HEAD"`
           if [ -z "$changes" ]; then
             changes="- none"
           fi
