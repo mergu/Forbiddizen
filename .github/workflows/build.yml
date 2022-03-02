@@ -45,13 +45,14 @@ jobs:
       - name: Get last tag
         run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: Build changelog
-        run: |
+        run: >-
           last_tag=`git describe --tags --abbrev=0`;
           changes=`git log --no-merges --format=format:"- %s" "$last_tag..HEAD"`;
           if [ -z "$changes" ]; then
-            changes="- no changes"
+            changes="- none"
           fi
-          echo "CHANGELOG=Changes since previous release:\n$changes" >> $GITHUB_ENV
+          changelog=$(printf 'Changes since previous release:\n%s' "$changes")
+          echo "CHANGELOG=$changelog" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
