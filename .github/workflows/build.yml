@@ -51,8 +51,10 @@ jobs:
           if [ -z "$changes" ]; then
             changes="- none"
           fi
-          changelog=$(printf 'Changes since previous release:\n%s' "$changes")
-          echo "CHANGELOG=\"$changelog\"" >> $GITHUB_ENV
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "Changes since previous release:" >> $GITHUB_ENV
+          echo "$changes" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create release
         id: create_release
