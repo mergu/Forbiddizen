@@ -91,8 +91,5 @@ public class TablistModifiedScriptEvent extends BukkitScriptEvent {
         this.packet = new WrapperPlayServerPlayerInfo(event.getPacket());
         cancelled = false;
         fire();
-        //if (!cancelled) {
-        //    event.setPacket(packet.getHandle());
-        //}
     }
 }

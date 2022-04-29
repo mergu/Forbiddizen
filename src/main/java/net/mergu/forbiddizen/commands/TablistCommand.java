@@ -20,8 +20,8 @@ import java.util.UUID;
 public class TablistCommand extends AbstractCommand {
 
     public TablistCommand() {
-        setName("tablist");
-        setSyntax("tablist [id:<id>/<player>] (action:<action>) (name:<name>) (display_name:<name>) (skin_blob:<skin_blob>) (ping:<ping>) (gamemode:<gamemode>)");
+        setName("old_tablist");
+        setSyntax("old_tablist [id:<id>/<player>] (action:<action>) (name:<name>) (display_name:<name>) (skin_blob:<skin_blob>) (ping:<ping>) (gamemode:<gamemode>)");
         setRequiredArguments(1, -1);
     }
 
